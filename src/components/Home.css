@@ -1,0 +1,206 @@
+.App {
+    text-align: center;
+    background: linear-gradient(to right, #00ffc8, #6a00ff);
+    font-family: 'Comic Sans MS', cursive;
+    background-size: cover;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    color: #ff1500;
+  }
+  
+  html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Comic Sans MS', cursive;
+    color: #ff1500;
+  }
+  
+  /* ------------------------ General Elements ------------------------ */
+  
+  h1, h2, h3, p, li, label, button, input {
+    font-family: 'Comic Sans MS', cursive;
+    color: #ff1500;
+  }
+  
+  button {
+    background-color: #ff1500;
+    color: white;
+    padding: 5px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  input {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    font-family: 'Comic Sans MS', cursive;
+    color: #ff1500;
+  }
+  
+  /* ------------------------ Layout ------------------------ */
+  
+  .home-container {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+    position: relative;
+  }
+  
+  /* ------------------------ Player List ------------------------ */
+  
+  .player-list {
+    width: 20%;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    margin: 1rem;
+    text-align: center;
+  }
+  
+  .player-list h2 {
+    margin-bottom: 1rem;
+  }
+  
+  .player-list ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .player-list li {
+    background-color: #ccc;
+    margin: 0.5rem 0;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  
+  /* ------------------------ Main Section ------------------------ */
+  
+  .main-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 2rem;
+    align-items: center;
+  }
+  
+  /* Title */
+  
+  .title {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Instructions Box */
+  
+  .instructions-box {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    width: 60%;
+    text-align: left;
+    margin-bottom: 2rem;
+  }
+  
+  .instructions-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .instruction-list {
+    margin-left: 1.5rem;
+  }
+  
+  .instructions-end {
+    font-weight: bold;
+    margin-top: 1rem;
+  }
+  
+  /* ------------------------ Button Row ------------------------ */
+  
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* ------------------------ Settings Icon ------------------------ */
+  
+  .settings-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #ff1500;
+  }
+  
+
+
+
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .name-input,
+  .room-input {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    font-family: 'Comic Sans MS', cursive;
+    color: #ff1500;
+    background-color: black;
+    width: 200px;
+    text-align: center;
+  }
+  
+  .button-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  /* ------------------------ Name Confirm / Edit ------------------------ */
+
+.name-confirm-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .confirmed-name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #ff1500;
+  }
+  
+  .confirm-button,
+  .edit-button {
+    background-color: #ff1500;
+    color: white;
+    padding: 4px 12px;
+    font-family: 'Comic Sans MS', cursive;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
