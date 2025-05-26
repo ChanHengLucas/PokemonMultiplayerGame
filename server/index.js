@@ -17,35 +17,85 @@ const io = new Server(server, {
   }
 });
 
-const rooms = {}; // { ROOM_CODE: [ { id, name } ] }
+const rooms = {}; // Structure: { roomCode: { leaderId, players: [{ id, name }] } }
 
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+  console.log('🔌 User connected:', socket.id);
 
+  // Create Room
   socket.on('create-room', ({ name, roomCode }) => {
-    rooms[roomCode] = [{ id: socket.id, name }];
+    rooms[roomCode] = {
+      leaderId: socket.id,
+      players: [{ id: socket.id, name }]
+    };
     socket.join(roomCode);
-    io.to(roomCode).emit('update-players', rooms[roomCode]);
+  
+    console.log(`🆕 Room created: ${roomCode} by ${name} (${socket.id})`);
+    io.to(roomCode).emit('update-players', {
+      players: rooms[roomCode].players,
+      leaderId: rooms[roomCode].leaderId
+    });
+  
+    // ✅ Emit room joined confirmation
+    socket.emit('room-joined', {
+      roomCode,
+      players: rooms[roomCode].players,
+      leaderId: rooms[roomCode].leaderId
+    });
   });
-
+  
+  // Join Room
   socket.on('join-room', ({ name, roomCode }) => {
     if (!rooms[roomCode]) {
       socket.emit('error-msg', 'Room does not exist.');
       return;
     }
-    rooms[roomCode].push({ id: socket.id, name });
+  
+    rooms[roomCode].players.push({ id: socket.id, name });
     socket.join(roomCode);
-    io.to(roomCode).emit('update-players', rooms[roomCode]);
+  
+    console.log(`👥 ${name} joined room ${roomCode}`);
+    io.to(roomCode).emit('update-players', {
+      players: rooms[roomCode].players,
+      leaderId: rooms[roomCode].leaderId
+    });
+  
+    // ✅ Emit room joined confirmation
+    socket.emit('room-joined', {
+      roomCode,
+      players: rooms[roomCode].players,
+      leaderId: rooms[roomCode].leaderId
+    });
   });
+  
 
+  // Disconnect Handling
   socket.on('disconnect', () => {
+    console.log('❌ Disconnected:', socket.id);
+
     for (const roomCode in rooms) {
-      rooms[roomCode] = rooms[roomCode].filter(player => player.id !== socket.id);
-      io.to(roomCode).emit('update-players', rooms[roomCode]);
+      const room = rooms[roomCode];
+      const wasInRoom = room.players.some(p => p.id === socket.id);
+
+      // Remove player
+      room.players = room.players.filter(p => p.id !== socket.id);
+
+      if (room.leaderId === socket.id && room.players.length > 0) {
+        room.leaderId = room.players[0].id;
+        console.log(`👑 Leader reassigned to ${room.leaderId} in room ${roomCode}`);
+      }
+
+      if (room.players.length === 0) {
+        console.log(`🗑️ Room deleted: ${roomCode}`);
+        delete rooms[roomCode];
+      } else if (wasInRoom) {
+        io.to(roomCode).emit('update-players', {
+          players: room.players,
+          leaderId: room.leaderId
+        });
+      }
     }
   });
 });
 
-// Socket.IO setup here
-
-server.listen(3001, () => console.log('Server running on port 3001'));
+server.listen(3001, () => console.log('🚀 Server running on http://localhost:3001'));
