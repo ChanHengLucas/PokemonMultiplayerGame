@@ -219,7 +219,7 @@
   }
   
 
-  
+
   .form-section {
     display: flex;
     flex-direction: column;
@@ -274,3 +274,6 @@
     cursor: pointer;
   }
   
+  .start-game-button {
+    margin-top: 12px;
+  }

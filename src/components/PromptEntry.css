@@ -1,0 +1,44 @@
+  .prompt-entry-container {
+    background: linear-gradient(to right, red, orange);
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    color: black;
+    width: 600px;
+    margin: auto;
+    position: relative;
+  }
+  
+  .prompt-timer {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: lightblue;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 60px;
+  }
+  
+  .prompt-textarea {
+    width: 80%;
+    height: 100px;
+    margin-top: 20px;
+    font-size: 1rem;
+    padding: 10px;
+  }
+  
+  .submit-button {
+    margin-top: 20px;
+    padding: 10px 30px;
+    font-size: 1rem;
+    background: linear-gradient(to bottom, #999, #333);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  

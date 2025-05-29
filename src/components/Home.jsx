@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import socket from '../socket';
 import './Home.css';
 
@@ -8,9 +9,21 @@ function Home() {
 
   const [roomCode, setRoomCode] = useState('');
   const roomCodeRef = useRef('');
+  const [inRoom, setInRoom] = useState(false);
+
+  const handleLeaveRoom = () => {
+    socket.emit('leave-room', { roomCode: roomCodeRef.current });
+    setInRoom(false);
+    setRoomCode('');
+    setPlayers([]);
+    setLeaderId(null);
+  };  
+
   const [players, setPlayers] = useState([]);
   const [leaderId, setLeaderId] = useState(null);
   const [socketId, setSocketId] = useState('');
+
+  const navigate = useNavigate();
 
   const defaultSettings = {
     promptsPerPlayer: 3,
@@ -25,6 +38,7 @@ function Home() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   const handleCreate = () => {
+    if (inRoom) return;
     if (!isNameConfirmed) return alert('Please confirm your name first.');
     const code = Math.random().toString(36).substring(2, 6).toUpperCase();
     roomCodeRef.current = code;
@@ -33,13 +47,15 @@ function Home() {
   };
   
   const handleJoin = () => {
+    if (inRoom) {
+      alert("You're already in a room.");
+      return;
+    }
     if (!isNameConfirmed) return alert('Please confirm your name first.');
     if (!roomCode) return alert('Please enter a room code.');
     roomCodeRef.current = roomCode;
     socket.emit('join-room', { name, roomCode });
-  };
-  
-  
+  };  
 
   useEffect(() => {
     socket.on('connect', () => {
@@ -48,7 +64,6 @@ function Home() {
   
     // Ignore updates if not yet in a room
     socket.on('update-players', ({ players, leaderId }) => {
-      if (!roomCodeRef.current) return;
       setPlayers(players || []);
       setLeaderId(leaderId);
     });
@@ -59,19 +74,23 @@ function Home() {
       setRoomCode(roomCode);
       setPlayers(players || []);
       setLeaderId(leaderId);
+      setInRoom(true);
     });
   
     socket.on('error-msg', (msg) => alert(msg));
-  
+
+    socket.on('game-starting', () => {
+        navigate('/game');
+    });
+      
     return () => {
       socket.off('connect');
       socket.off('update-players');
       socket.off('room-joined');
       socket.off('error-msg');
+      socket.off('game-starting');
     };
   }, []);
-  
-  
 
   return (
     <div className="App">
@@ -143,18 +162,41 @@ function Home() {
             </div>
 
             <div className="button-row">
-              <button className="action-button" onClick={handleCreate}>Create Room</button>
-              <button className="action-button" onClick={handleJoin}>Join Room</button>
+                {!inRoom ? (
+                <>
+                    <button className="action-button" onClick={handleCreate}>Create Room</button>
+                    <button className="action-button" onClick={handleJoin}>Join Room</button>
+                </>
+                ) : (
+                <button className="action-button leave-room" onClick={handleLeaveRoom}>Leave Room</button>
+                )}
             </div>
 
             <input
-              type="text"
-              placeholder="Room Code"
-              value={roomCode}
-              onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-              className="room-input"
+                type="text"
+                placeholder="Room Code"
+                value={roomCode}
+                onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+                className="room-input"
+                disabled={inRoom}
             />
+
           </div>
+
+          {socketId === leaderId && players.length >= 3 && (
+            <div className="start-button-container">
+                <button
+                className="start-game-button"
+                onClick={() => socket.emit('start-game')}
+                >
+                Start Game
+                </button>
+            </div>
+            )}
+            {socketId === leaderId && players.length < 3 && (
+            <p className="alert-message">Need at least 3 players to start</p>
+          )}
+
         </div>
 
         <div
