@@ -1,12 +1,14 @@
-  .prompt-entry-container {
-    background: linear-gradient(to right, red, orange);
-    padding: 30px;
-    border-radius: 12px;
+.prompt-entry-container {
+    background: rgba(255, 255, 255, 0.2); /* translucent white */
+    padding: 40px;
+    border-radius: 16px;
     text-align: center;
-    color: black;
-    width: 600px;
-    margin: auto;
+    color: #007BFF; /* blue text */
+    width: 70%;
+    max-width: 800px;
+    margin: 80px auto;
     position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   }
   
   .prompt-timer {
@@ -14,31 +16,54 @@
     top: 20px;
     right: 20px;
     background-color: lightblue;
-    width: 60px;
-    height: 60px;
+    color: #007BFF;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: bold;
-    line-height: 60px;
+    line-height: 70px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .prompt-header,
+  .prompt-subheader {
+    color: #007BFF;
   }
   
   .prompt-textarea {
-    width: 80%;
-    height: 100px;
-    margin-top: 20px;
-    font-size: 1rem;
-    padding: 10px;
+    width: 90%;
+    height: 150px;
+    margin-top: 25px;
+    font-size: 1.1rem;
+    padding: 12px;
+    color: #007BFF;
+    border: 2px solid #007BFF;
+    border-radius: 8px;
+    box-sizing: border-box;
+    resize: none;
+    background-color: white;
+  }
+  
+  .prompt-textarea::placeholder {
+    color: #999;
   }
   
   .submit-button {
     margin-top: 20px;
-    padding: 10px 30px;
+    padding: 12px 30px;
     font-size: 1rem;
-    background: linear-gradient(to bottom, #999, #333);
+    background: linear-gradient(to bottom, #007BFF, #0056b3);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: background 0.3s ease;
   }
   
+  .submit-button:disabled {
+    background: gray;
+    cursor: not-allowed;
+  }
   

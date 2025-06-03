@@ -1,5 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue&display=swap');
 
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+  }
+  
+  .game-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #ff9966, #ff5e62); /* unified gradient */
+  }  
+
 .game-container {
     width: 100vw;
     height: 100vh;

@@ -10,14 +10,7 @@ function Home() {
   const [roomCode, setRoomCode] = useState('');
   const roomCodeRef = useRef('');
   const [inRoom, setInRoom] = useState(false);
-
-  const handleLeaveRoom = () => {
-    socket.emit('leave-room', { roomCode: roomCodeRef.current });
-    setInRoom(false);
-    setRoomCode('');
-    setPlayers([]);
-    setLeaderId(null);
-  };  
+  const inRoomRef = useRef(false);
 
   const [players, setPlayers] = useState([]);
   const [leaderId, setLeaderId] = useState(null);
@@ -38,23 +31,36 @@ function Home() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   const handleCreate = () => {
-    if (inRoom) return;
+    if (inRoomRef.current) return;
     if (!isNameConfirmed) return alert('Please confirm your name first.');
     const code = Math.random().toString(36).substring(2, 6).toUpperCase();
     roomCodeRef.current = code;
     setRoomCode(code);
+    inRoomRef.current = true;
+    setInRoom(true);
     socket.emit('create-room', { name, roomCode: code });
-  };
+  };  
   
   const handleJoin = () => {
-    if (inRoom) {
+    if (inRoomRef.current) {
       alert("You're already in a room.");
       return;
     }
     if (!isNameConfirmed) return alert('Please confirm your name first.');
     if (!roomCode) return alert('Please enter a room code.');
     roomCodeRef.current = roomCode;
+    inRoomRef.current = true;
+    setInRoom(true);
     socket.emit('join-room', { name, roomCode });
+  };
+  
+  const handleLeaveRoom = () => {
+    socket.emit('leave-room', { roomCode: roomCodeRef.current });
+    inRoomRef.current = false;
+    setInRoom(false);
+    setRoomCode('');
+    setPlayers([]);
+    setLeaderId(null);
   };  
 
   useEffect(() => {
@@ -64,6 +70,7 @@ function Home() {
   
     // Ignore updates if not yet in a room
     socket.on('update-players', ({ players, leaderId }) => {
+      if (!inRoomRef.current) return;
       setPlayers(players || []);
       setLeaderId(leaderId);
     });
@@ -80,8 +87,11 @@ function Home() {
     socket.on('error-msg', (msg) => alert(msg));
 
     socket.on('game-starting', () => {
-        navigate('/game');
+        const encodedRoom = encodeURIComponent(roomCodeRef.current);
+        const encodedId = encodeURIComponent(socket.id);
+        navigate(`/game/${encodedRoom}/${encodedId}`);
     });
+    
       
     return () => {
       socket.off('connect');
@@ -325,4 +335,17 @@ export default Home;
   - Provide an alert under the start game button when there are not enough players
 
 - Create the other pages for the different portions of the game
+*/
+
+
+/*
+
+Things to fix:
+
+1) css for Game --> gradient doesn't really work properly due to dimensional issues
+2) css for PromptEntry --> text color should be in blue instead of orange due to conflicting colors with background
+3) jsx for PromptEntry --> timer should be universal
+4) css for PromptEntry --> timer overlaps with the text area, expand the area for prompt entry
+5) jsx for Game --> refreshing the page should not let the user re-enter the game, send them to home instead (unless you implement a link feature that is directly based off room code and player id)
+
 */

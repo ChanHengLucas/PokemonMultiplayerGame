@@ -10,8 +10,8 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/game" element={<Game />} />
-      <Route path="/promptentry" element={<PromptEntry />} />
+      <Route path="/game/:roomCode/:playerId" element={<Game />} />
+      <Route path="/promptentry/:roomCode/:playerId" element={<PromptEntry />} />
     </Routes>
   );
 }

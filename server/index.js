@@ -79,31 +79,30 @@ io.on('connection', (socket) => {
   });  
 
   // Leave Room
-    socket.on('leave-room', ({ roomCode }) => {
-        const room = rooms[roomCode];
-        if (!room) return;
-    
-        const wasInRoom = room.players.some(p => p.id === socket.id);
-        room.players = room.players.filter(p => p.id !== socket.id);
-    
-        if (room.leaderId === socket.id && room.players.length > 0) {
-        room.leaderId = room.players[0].id;
-        console.log(`👑 Leader reassigned to ${room.leaderId} in room ${roomCode}`);
-        }
-    
-        if (room.players.length === 0) {
-        console.log(`🗑️ Room deleted: ${roomCode}`);
-        delete rooms[roomCode];
-        } else if (wasInRoom) {
-        io.to(roomCode).emit('update-players', {
-            players: room.players,
-            leaderId: room.leaderId
-        });
-        }
-    
-        socket.leave(roomCode);
-        console.log(`🚪 ${socket.id} left room ${roomCode}`);
-    });  
+  socket.on('leave-room', ({ roomCode }) => {
+    if (!rooms[roomCode]) return;
+  
+    const room = rooms[roomCode];
+    room.players = room.players.filter(p => p.id !== socket.id);
+    socket.leave(roomCode);
+  
+    if (room.leaderId === socket.id && room.players.length > 0) {
+      room.leaderId = room.players[0].id;
+      console.log(`👑 Leader reassigned to ${room.leaderId} in room ${roomCode}`);
+    }
+  
+    if (room.players.length === 0) {
+      console.log(`🗑️ Room deleted: ${roomCode}`);
+      delete rooms[roomCode];
+    } else {
+      io.to(roomCode).emit('update-players', {
+        players: room.players,
+        leaderId: room.leaderId
+      });
+    }
+  
+    console.log(`🚪 ${socket.id} left room ${roomCode}`);
+  });
   
   // Disconnect Handling
   socket.on('disconnect', () => {
